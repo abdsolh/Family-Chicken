@@ -3,11 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>كل المنتجات</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
     font-family: Tahoma;
     background:#f4f6f7;
-    padding:20px;
+    padding:10px;
+    margin:0;
 }
 h1,h2 { text-align:center; margin-bottom:10px; }
 
@@ -27,6 +29,7 @@ h1,h2 { text-align:center; margin-bottom:10px; }
     border-radius:8px;
     box-shadow:0 0 5px #ccc;
     display:flex;
+    flex-direction: row;
     align-items:flex-start;
     gap:10px;
 }
@@ -40,13 +43,15 @@ h1,h2 { text-align:center; margin-bottom:10px; }
 
 .info { flex:1; }
 
-.price { color:#e74c3c; font-weight:bold; font-size:14px; }
+.price { color:#e74c3c; font-weight:bold; font-size:14px; margin-bottom:5px; }
 
 input[type="number"], input[type="text"], input[type="time"] {
     width:100%;
     padding:6px;
-    margin-top:5px;
+    margin:5px 0;
     box-sizing:border-box;
+    border-radius:4px;
+    border:1px solid #ccc;
 }
 
 #invoice {
@@ -68,11 +73,27 @@ button {
     cursor:pointer;
     margin-top:15px;
 }
+
+/* ====== Responsive ====== */
+@media screen and (max-width: 600px) {
+    .item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .item img {
+        width:120px;
+        height:120px;
+    }
+    .info input {
+        width:90%;
+    }
+}
 </style>
 </head>
 <body>
 
-<h1>🛒  فروج العائلة   </h1>
+<h1>🛒 فروج العائلة</h1>
 
 <!-- قسم الفروج -->
 <h2 class="section-title">🍗 قسم الفروج</h2>
