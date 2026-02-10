@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>كل المنتجات</title>
+<title>فروج العائلة</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
@@ -14,7 +14,7 @@ body {
 h1,h2 { text-align:center; margin-bottom:10px; }
 
 .section-title {
-    background:#3498db;
+    background:#49b3fa;
     color:white;
     padding:8px;
     border-radius:5px;
@@ -29,19 +29,20 @@ h1,h2 { text-align:center; margin-bottom:10px; }
     border-radius:8px;
     box-shadow:0 0 5px #ccc;
     display:flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items:flex-start;
-    gap:10px;
+    gap:5px;
 }
 
 .item img {
-    width:80px;
-    height:80px;
+    width:100%;
+    max-width:150px;
+    height:auto;
     object-fit:cover;
     border-radius:6px;
 }
 
-.info { flex:1; }
+.info { width:100%; }
 
 .price { color:#e74c3c; font-weight:bold; font-size:14px; margin-bottom:5px; }
 
@@ -64,30 +65,20 @@ input[type="number"], input[type="text"], input[type="time"] {
 
 button {
     width:100%;
-    padding:12px;
-    background:#07ff62;
-    color:rgb(255, 159, 159);
+    padding:10px;
+    background:#1fca5e;
+    color:rgb(0, 0, 0);
     border:none;
     border-radius:5px;
-    font-size:16px;
+    font-size:14px;
     cursor:pointer;
-    margin-top:15px;
+    margin-top:5px;
 }
 
-/* ====== Responsive ====== */
+/* Responsive */
 @media screen and (max-width: 600px) {
-    .item {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .item img {
-        width:120px;
-        height:120px;
-    }
-    .info input {
-        width:90%;
-    }
+    .item { text-align:center; align-items:center; }
+    .item img { width:100%; max-width:200px; }
 }
 </style>
 </head>
@@ -95,19 +86,15 @@ button {
 
 <h1>🛒 فروج العائلة</h1>
 
-<!-- قسم الفروج -->
 <h2 class="section-title">🍗 قسم الفروج</h2>
 <div id="chicken-container"></div>
 
-<!-- قسم الأجبان والألبان -->
 <h2 class="section-title">🧀🥛 قسم الأجبان والألبان</h2>
 <div id="dairy-container"></div>
 
-<!-- قسم الزيتون -->
 <h2 class="section-title">🫒 قسم الزيتون</h2>
 <div id="olive-container"></div>
 
-<!-- بيانات الزبون -->
 <div id="invoice">
     <h2>🧾 بيانات الطلب</h2>
     <label>اسم الزبون:</label>
@@ -121,12 +108,10 @@ button {
     <strong>المجموع: <span id="total">0</span></strong>
 </div>
 
-<button onclick="sendWhatsApp()">📲 إرسال الطلب عبر واتساب</button>
+<button onclick="sendWhatsApp()">📲 إرسال الفاتورة الكاملة عبر واتساب</button>
 
 <script>
-// ======== الأصناف ========
-
-// الفروج
+// الأصناف
 const chickenItems = [
     {name:'فخاد', priceKilo:160000, img:'images/thigh.jpg'},
     {name:'جوانح', priceKilo:175000, img:'images/wings.jpg'},
@@ -152,7 +137,6 @@ const chickenItems = [
     {name:'دبوس متبلي', priceKilo:300000, img:'images/dabbos_spicy.jpg'}
 ];
 
-// الأجبان والألبان
 const dairyItems = [
     {name:'جبنة صفراء', priceKilo:100000, img:'images/cheese_yellow.jpg'},
     {name:'جبنة بيضا', priceKilo:100000, img:'images/cheese_white.jpg'},
@@ -166,7 +150,6 @@ const dairyItems = [
     {name:'لبنة', priceKilo:80000, img:'images/labneh.jpg'}
 ];
 
-// الزيتون
 const oliveItems = [
     {name:'زيتون أسود', priceKilo:90000, img:'images/olive_black.jpg'},
     {name:'زيتون أخضر', priceKilo:90000, img:'images/olive_green.jpg'},
@@ -175,11 +158,10 @@ const oliveItems = [
     {name:'زيتون مشوي', priceKilo:130000, img:'images/olive_roasted.jpg'}
 ];
 
-// ======== إدارة الطلب ========
 let order = {};
 let total = 0;
 
-// إنشاء العناصر مع حقل الكمية والمبلغ
+// إنشاء العناصر مع حقول الكمية والمبلغ + زر لكل عنصر
 function createItems(containerId, items){
     const container = document.getElementById(containerId);
     items.forEach(item => {
@@ -192,12 +174,12 @@ function createItems(containerId, items){
                 <div class="price">سعر الكيلو: ${item.priceKilo.toLocaleString()}</div>
                 
                 <label>الكمية بالكيلو:</label>
-                <input type="number" min="0" placeholder="الكمية بالكيلو" 
-                       onchange="updateItem('${item.name}', ${item.priceKilo}, this.value, null)">
+                <input type="number" min="0" placeholder="الكمية بالكيلو" id="qty-${item.name}">
                 
                 <label>المبلغ المراد صرفه:</label>
-                <input type="number" min="0" placeholder="المبلغ بالليرة" 
-                       onchange="updateItem('${item.name}', ${item.priceKilo}, null, this.value)">
+                <input type="number" min="0" placeholder="المبلغ بالليرة" id="amt-${item.name}">
+                
+                <button onclick="orderSingleItem('${item.name}', ${item.priceKilo})">📲 اطلب بواسطة الواتس اب</button
             </div>
         `;
         container.appendChild(div);
@@ -208,23 +190,40 @@ createItems('chicken-container', chickenItems);
 createItems('dairy-container', dairyItems);
 createItems('olive-container', oliveItems);
 
-function updateItem(name, priceKilo, qty, amount){
-    if(qty !== null && qty > 0){
-        order[name] = {priceKilo, qty: parseFloat(qty)};
-    } else if(amount !== null && amount > 0){
-        let calculatedQty = amount / priceKilo;
-        order[name] = {priceKilo, qty: parseFloat(calculatedQty.toFixed(2))};
-    } else {
-        delete order[name];
-    }
-    updateInvoice();
+// إرسال عنصر واحد فقط
+function orderSingleItem(name, priceKilo){
+    const qtyInput = document.getElementById(`qty-${name}`).value;
+    const amtInput = document.getElementById(`amt-${name}`).value;
+    let qty = 0;
+
+    if(qtyInput) qty = parseFloat(qtyInput);
+    else if(amtInput) qty = parseFloat((amtInput/priceKilo).toFixed(2));
+    else { alert("أدخل كمية أو مبلغ"); return; }
+
+    // تحديث الطلب الكلي أيضاً
+    order[name] = {priceKilo, qty};
+
+    const nameCustomer = document.getElementById('customerName').value.trim();
+    const pickupTime = document.getElementById('pickupTime').value;
+    if(!nameCustomer || !pickupTime){ alert("أدخل اسم الزبون وموعد الاستلام"); return; }
+
+    const subTotal = (priceKilo*qty).toLocaleString();
+
+    let text = `🧾 طلب جديد:%0Aالزبون: ${nameCustomer}%0Aموعد الاستلام: ${pickupTime}%0A----------------%0A`;
+    text += `${name} × ${qty} كيلو = ${subTotal}%0A----------------%0A💰 المجموع: ${subTotal}`;
+
+    const phone = "70148022";
+    window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
+
+    updateInvoice(); // تحديث الفاتورة الكاملة
 }
 
+// تحديث الفاتورة الكاملة
 function updateInvoice(){
     total = 0;
     let html = "";
     for(let item in order){
-        let sub = order[item].priceKilo * order[item].qty;
+        let sub = order[item].priceKilo*order[item].qty;
         total += sub;
         html += `${item} × ${order[item].qty} كيلو = ${sub.toLocaleString()}<br>`;
     }
@@ -232,37 +231,31 @@ function updateInvoice(){
     document.getElementById("total").innerText = total.toLocaleString();
 }
 
+// إرسال الفاتورة الكاملة
 function sendWhatsApp(){
     const name = document.getElementById('customerName').value.trim();
     const time = document.getElementById('pickupTime').value;
-
-    if(!name || !time){
-        alert("الرجاء إدخال اسم الزبون وموعد الاستلام");
-        return;
-    }
-
-    if(total === 0){
-        alert("لم يتم اختيار أي صنف");
-        return;
-    }
+    if(!name || !time){ alert("أدخل اسم الزبون وموعد الاستلام"); return; }
+    if(Object.keys(order).length === 0){ alert("لم يتم اختيار أي صنف"); return; }
 
     let text = `🧾 طلب جديد:%0Aالزبون: ${name}%0Aموعد الاستلام: ${time}%0A----------------%0A`;
+    let totalAll = 0;
     for(let item in order){
-        let sub = order[item].priceKilo * order[item].qty;
+        let sub = order[item].priceKilo*order[item].qty;
+        totalAll += sub;
         text += `${item} × ${order[item].qty} كيلو = ${sub.toLocaleString()}%0A`;
     }
-    text += `----------------%0A💰 المجموع: ${total.toLocaleString()}`;
+    text += `----------------%0A💰 المجموع: ${totalAll.toLocaleString()}`;
 
     const phone = "70148022";
-    window.open(`https://wa.me/${phone}?text=${text}`,"_blank");
+    window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
 }
 </script>
 
-<!-- أسفل الصفحة: العنوان + واتساب -->
 <div style="text-align:center; margin-top:30px; font-size:16px; color:#2c3e50;">
     📍 بعلبك، طريق نحلة، جانب صيدلية منح
     <br>
-    <a href="https://wa.me/70148022" target="_blank" style="text-decoration:none; color:#25D366; font-weight:bold; font-size:18px;">
+    <a href="https://wa.me/70148022" target="_blank" style="text-decoration:none; color:#026626; font-weight:bold; font-size:18px;">
         🟢 واتساب: 70148022
     </a>
 </div>
