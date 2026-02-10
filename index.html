@@ -174,10 +174,12 @@ function createItems(containerId, items){
                 <div class="price">سعر الكيلو: ${item.priceKilo.toLocaleString()}</div>
                 
                 <label>الكمية بالكيلو:</label>
-                <input type="number" min="0" placeholder="الكمية بالكيلو" id="qty-${item.name}">
-                
-                <label>المبلغ المراد صرفه:</label>
-                <input type="number" min="0" placeholder="المبلغ بالليرة" id="amt-${item.name}">
+<input type="number" min="0" placeholder="الكمية بالكيلو" id="qty-${item.name}">
+
+<br> <!-- سطر جديد -->
+
+<label>المبلغ المراد صرفه:</label>
+<input type="number" min="0" placeholder="المبلغ بالليرة" id="amt-${item.name}">
                 
                 <button onclick="orderSingleItem('${item.name}', ${item.priceKilo})">📲 اطلب بواسطة الواتس اب</button
             </div>
